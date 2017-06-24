@@ -1,0 +1,13 @@
+{
+    "name": "blessed-tetris",
+    "scripts": {
+        "start": "node daemon",
+        "reload": "node daemon --reload"
+    },
+    "dependencies": {
+        "blessed": "^0.1.81"
+    },
+    "devDependencies": {
+        "chokidar": "^1.7.0"
+    }
+}
