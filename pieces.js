@@ -355,7 +355,7 @@ const getRandom = (game) => {
         startTimer() {
             piece.timer = setInterval(() => {
                 piece.advance();
-            }, [500, 450, 400, 350][game.level] || 200);
+            }, [500, 450, 400, 350, 300, 250, 200, 150, 100][game.level - 1] || 50);
         },
         stopTimer() {
             clearInterval(piece.timer);

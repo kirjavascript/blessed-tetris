@@ -93,7 +93,7 @@ module.exports = (client) => {
         parent: statsBox,
         width: 'shrink',
         left: 'center',
-        top: 'center',
+        top: 7,
         tags: true,
         hidden: true,
         timer: void 0,
@@ -222,8 +222,8 @@ module.exports = (client) => {
             let stats = {
                 Score: game.score,
                 Lines: game.lines,
-                LPM: (game.lines / minutesPlaying).toFixed(2),
                 Level: game.level,
+                LPM: (game.lines / minutesPlaying).toFixed(2),
             };
 
             statsBox.setContent(
@@ -312,7 +312,7 @@ module.exports = (client) => {
             },
         },
         {
-            keys: ['tab'],
+            keys: ['tab', 'v', 'm', '\\'],
             action: () => {
                 game.hold();
             },
