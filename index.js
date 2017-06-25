@@ -1,10 +1,6 @@
 const { Screen, Box, Log, Message } = require('blessed');
 const { getRandom, } = require('./pieces');
 
-// TETRIS!
-
-// point.element.style.transparent = true;
-
 const screen = new Screen({
     fastCSR: true,
     dockBorders: true,
@@ -162,7 +158,7 @@ const game = {
     },
     addLines(n) {
         game.lines += n;
-        alertMessage.display(n == 4 ? 'Tetris!' : `cleared ${n} lines`);
+        alertMessage.display(n == 4 ? 'Tetris!' : `${n} Lines!`);
     },
     render() {
         activePiece.eachCell(
@@ -171,6 +167,16 @@ const game = {
             },
             (point) => {
                 point.element.style.bg = point.color;
+            },
+        );
+
+        activePiece.eachGhost(
+            (point) => {
+                point.element.style.transparent = !point.element.style.bg;
+                point.element.style.bg = activePiece.color;
+            },
+            (point) => {
+                point.element.style.transparent = false;
             },
         );
 

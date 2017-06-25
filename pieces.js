@@ -312,6 +312,16 @@ const getRandom = (game) => {
                 }
             });
         },
+        eachGhost(on, off) {
+            let savedY = piece.y;
+
+            while (!piece.checkPlace()) {
+                piece.y++;
+            }
+            piece.y--;
+            piece.eachCell(on, off);
+            piece.y = savedY;
+        },
         eachCell(callbackOn, callbackOff) {
             board.forEach((point, i) => {
 
@@ -340,10 +350,14 @@ const getRandom = (game) => {
         startTimer() {
             piece.timer = setInterval(() => {
                 piece.advance();
-            }, [500, 400, 300, 200][game.level] || 100);
+            }, [500, 450, 400, 350][game.level] || 200);
         },
         stopTimer() {
             clearInterval(piece.timer);
+        },
+        clone() {
+            let newObj = Object.create(piece);
+            return Object.assign(newObj, piece);
         },
     });
 
