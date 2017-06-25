@@ -299,7 +299,9 @@ const getRandom = (game) => {
             return piece.frames[piece.rotation % 4];
         },
         viewShape() {
-            return piece.getShape().join``.match(/..../g).join`\n`
+            return `{${piece.color}-fg}` + piece.getShape().join``.match(/..../g).join`\n`.replace(/0|1/g, m => {
+                return m == '1' ? '██' : '  ';
+            }) + '{/}';
         },
         each(callback) {
             piece.getShape().forEach((d, i) => {
@@ -335,19 +337,20 @@ const getRandom = (game) => {
 
             });
         },
+        startTimer() {
+            piece.timer = setInterval(() => {
+                piece.advance();
+            }, [500, 400, 300, 200][game.level] || 100);
+        },
         stopTimer() {
             clearInterval(piece.timer);
         },
-
     });
 
     Object.assign(piece, pieces[nextIndex], {
         x: (width/2)-2,
         y: -2,
         rotation: 0|Math.random()*4,
-        timer: setInterval(() => {
-            piece.advance();
-        }, 500),
     });
 
     return piece;

@@ -1,6 +1,10 @@
 const { Screen, Box, Log, Message } = require('blessed');
 const { getRandom, } = require('./pieces');
 
+// TETRIS!
+
+// point.element.style.transparent = true;
+
 const screen = new Screen({
     fastCSR: true,
     dockBorders: true,
@@ -38,11 +42,11 @@ const title = new Box({
         fg: '#06A',
     },
     content: '╔╦╗┌─┐┌┬┐┬─┐┬┌─┐\n ║ ├┤  │ ├┬┘│└─┐\n ╩ └─┘ ┴ ┴└─┴└─┘',
-    left: '50%-10',
+    left: '50%-9',
     top: 0,
 });
 
-const stats = new Box({
+const statsBox = new Box({
     parent: screen,
     width: (width*zoom+2),
     height: `100%-${(height*(zoom/2))+2+3}`,
@@ -54,8 +58,43 @@ const stats = new Box({
     },
     left: 'center',
     top: 3,
+    tags: true,
+    padding: {
+        left: 2,
+        top: 1,
+        right: 2,
+    },
 });
 
+const nextBox = new Box({
+    parent: statsBox,
+    width: 'shrink',
+    height: `shrink`,
+    style: {
+    },
+    top: 0,
+    right: 0,
+    tags: true,
+});
+
+const alertMessage = new Box({
+    parent: statsBox,
+    width: 'shrink',
+    left: 'center',
+    top: 'center',
+    tags: true,
+    hidden: true,
+    timer: void 0,
+});
+
+alertMessage.display = (msg) => {
+    alertMessage.setContent(`{bold}${msg}{/}`);
+    alertMessage.show();
+    alertMessage.timer && clearTimeout(alertMessage.timer);
+    alertMessage.timer = setTimeout(() => {
+        alertMessage.hide();
+    }, 2000)
+};
 
 const restartMessage = new Message({
     parent: screen,
@@ -98,8 +137,6 @@ const board = Array.from({length: width*height}, (_, i) => {
 
 let activePiece, pendingPiece, timer;
 
-// point.element.style.transparent = true;
-
 const game = {
     score: 0,
     lines: 0,
@@ -113,7 +150,9 @@ const game = {
     zoom,
     running: false,
     nextPiece: () => {
-        activePiece = getRandom(game);
+        activePiece = pendingPiece;
+        activePiece.startTimer();
+        pendingPiece = getRandom(game);
         if (activePiece.checkPlace()) {
             game.stop();
         }
@@ -123,6 +162,7 @@ const game = {
     },
     addLines(n) {
         game.lines += n;
+        alertMessage.display(n == 4 ? 'Tetris!' : `cleared ${n} lines`);
     },
     render() {
         activePiece.eachCell(
@@ -134,12 +174,15 @@ const game = {
             },
         );
 
-        stats.setContent(`Score: ${game.score}\nLines: ${game.lines}\nLevel: ${game.level}`);
+        statsBox.setContent(`Score: {bold}${game.score}{/}\nLines: {bold}${game.lines}{/}\nLevel: {bold}${game.level}{/}`);
+
+        nextBox.setContent(` Next\n\n${pendingPiece.viewShape()}`);
 
         screen.render();
     },
     start() {
         game.running = true;
+        pendingPiece = getRandom(game);
         game.nextPiece();
         timer = setInterval(() => {
             game.render();
