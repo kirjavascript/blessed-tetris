@@ -1,5 +1,6 @@
-const { Screen, Box, Log, Message } = require('blessed');
+const { Screen, Box } = require('blessed');
 const { getRandom } = require('./pieces');
+const { createStats } = require('./stats');
 
 module.exports = (client) => {
 
@@ -33,10 +34,9 @@ module.exports = (client) => {
         left: 'center',
     });
 
-
     const title = new Box({
         parent: screen,
-        width: 'shrink',
+        width: '100%',
         height: 3,
         content: '',
         style: {
@@ -47,85 +47,16 @@ module.exports = (client) => {
         top: 0,
     });
 
-    const statsBox = new Box({
-        parent: screen,
-        width: (width*zoom+2),
-        height: `100%-${(height*(zoom/2))+2+3}`,
-        border: 'line',
-        style: {
-            border: {
-                fg: '#06A',
-            },
-        },
-        left: 'center',
-        top: 3,
-        tags: true,
-        padding: {
-            left: 2,
-            top: 1,
-            right: 2,
-        },
-    });
-
-    const nextBox = new Box({
-        parent: statsBox,
-        width: 'shrink',
-        height: `shrink`,
-        style: {
-        },
-        top: 0,
-        right: 0,
-        tags: true,
-    });
-
-    const holdBox = new Box({
-        parent: statsBox,
-        width: 'shrink',
-        height: `shrink`,
-        style: {
-        },
-        top: 0,
-        right: 12,
-        tags: true,
-    });
-
-    const alertMessage = new Box({
-        parent: statsBox,
-        width: 'shrink',
-        left: 'center',
-        top: 7,
-        tags: true,
-        hidden: true,
-        timer: void 0,
-    });
-
-    alertMessage.display = (msg) => {
-        alertMessage.setContent(`{bold}${msg}{/}`);
-        alertMessage.show();
-        alertMessage.timer && clearTimeout(alertMessage.timer);
-        alertMessage.timer = setTimeout(() => {
-            alertMessage.hide();
-        }, 2000)
-    };
-
-    const restartMessage = new Message({
-        parent: screen,
-        width: 'shrink',
-        height: `shrink`,
-        border: 'line',
-        style: {
-            border: {
-                fg: '#06A',
-            },
-        },
-        left: 'center',
-        top: '60%',
-        hidden: true,
-    });
+    const {
+        alertMessage,
+        restartMessage,
+        holdBox,
+        nextBox,
+        statsBox,
+    } = createStats({ width, height, zoom, screen });
 
     const board = Array.from({length: width*height}, (_, i) => {
-        const point = Object.create({
-        });
+        const point = Object.create(null);
 
         const color = void 0;
         const x = i % width;

@@ -3,7 +3,6 @@ const newGame = require('./game');
 
 // github link bottom of statsBox
 // zoom
-// pause
 // highscore
 
 const serve = process.argv.includes('--serve');
