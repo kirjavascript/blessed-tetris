@@ -175,9 +175,6 @@ module.exports = (client) => {
             game.stopTime = 0;
             pendingPiece = getRandom(game);
             game.nextPiece();
-            timer = setInterval(() => {
-                game.render();
-            }, 50)
             game.render();
         },
         stop() {
