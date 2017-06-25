@@ -41,7 +41,7 @@ module.exports = (client) => {
         style: {
             fg: '#06A',
         },
-        content: '╔╦╗╔═╗╔╦╗╦═╗╦╔═╗\n ║ ║╣  ║ ╠╦╝║╚═╗\, ╩ ╚═╝ ╩ ╩╚═╩╚═╝',
+        content: '╔╦╗╔═╗╔╦╗╦═╗╦╔═╗\n ║ ║╣  ║ ╠╦╝║╚═╗\n ╩ ╚═╝ ╩ ╩╚═╩╚═╝',
         left: '50%-9',
         top: 0,
     });
@@ -196,7 +196,7 @@ module.exports = (client) => {
             game.nextPiece();
             timer = setInterval(() => {
                 game.render();
-            }, 14)
+            }, 50)
         },
         stop() {
             activePiece.stopTimer();

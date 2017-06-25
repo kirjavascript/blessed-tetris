@@ -4,6 +4,7 @@ const newGame = require('./game');
 // github link bottom of statsBox
 // zoom
 // pause
+// highscore
 
 const serve = process.argv.includes('--serve');
 const serveDev = process.argv.includes('--serve-dev');
@@ -25,7 +26,7 @@ if (serve || serveDev) {
 
         screen.on('destroy', function() {
             if (client.writable) {
-              client.destroy();
+                client.destroy();
             }
         });
 
