@@ -8,9 +8,7 @@ const messageBase = {
     style: {
         border: {
             fg: '#06A',
-            bg: '#000',
         },
-        bg: '#000',
     },
     left: 'center',
     top: '50%',

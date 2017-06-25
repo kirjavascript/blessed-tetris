@@ -10,9 +10,7 @@ const createStats = ({width, height, zoom, screen}) => {
         style: {
             border: {
                 fg: '#06A',
-                bg: '#000',
             },
-            bg: '#000',
         },
         left: 'center',
         top: 4,
@@ -30,7 +28,6 @@ const createStats = ({width, height, zoom, screen}) => {
         width: 'shrink',
         height: `shrink`,
         style: {
-            bg: '#000',
         },
         top: 0,
         right: 0,
@@ -42,7 +39,6 @@ const createStats = ({width, height, zoom, screen}) => {
         width: 'shrink',
         height: `shrink`,
         style: {
-            bg: '#000',
         },
         top: 0,
         right: 12,
@@ -55,7 +51,6 @@ const createStats = ({width, height, zoom, screen}) => {
         left: 'center',
         top: 6,
         style: {
-            bg: '#000',
         },
         tags: true,
         hidden: true,
