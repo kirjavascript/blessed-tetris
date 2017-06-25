@@ -21,7 +21,7 @@
     proc.on('exit', rip);
 
     require('chokidar')
-        .watch('**/*', {ignored: /[\/\\]\./})
+        .watch('**/*', {ignored: [/[\/\\]\./, 'scores.json']})
         .on('change', () => {
             proc.removeListener('exit', rip);
             proc.on('exit', arguments.callee);

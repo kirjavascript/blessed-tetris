@@ -151,12 +151,11 @@ module.exports = (client) => {
                     point.element.style.bg = point.element.style.bg;
                 },
             );
-            let minutesPlaying = Math.max(game.timePlaying(), 1) / 1000 / 60;
             let stats = {
                 Score: game.score,
                 Lines: game.lines,
                 Level: game.level,
-                LPM: (game.lines / minutesPlaying).toFixed(2),
+                LPM: game.linesPerMinute(),
             };
 
             statsBox.setContent(
@@ -171,6 +170,10 @@ module.exports = (client) => {
             holdBox.setContent(` Hold\n\n${heldPiece ? heldPiece.viewShape() : ''}`)
 
             screen.render();
+        },
+        linesPerMinute() {
+            let minutesPlaying = Math.max(game.timePlaying(), 1) / 1000 / 60;
+            return (game.lines / minutesPlaying).toFixed(2);
         },
         timePlaying() {
             return (game.stopTime || Date.now()) - game.startTime

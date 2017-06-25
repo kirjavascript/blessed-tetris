@@ -1,4 +1,4 @@
-const { Box, Message, Button } = require('blessed');
+const { Box, Message, Button, ListTable } = require('blessed');
 const { getHighscores } = require('./highscores');
 
 const messageBase = {
@@ -93,13 +93,22 @@ const createMenu = ({screen}) => {
         })
     );
 
-    const highscoreMessage = new Message(Object.assign({},
+    const highscoreMessage = new Box(Object.assign({},
         messageBase, {
             parent: screen,
             tags: true,
             width: 40,
+            content: '{bold}High Scores{/}',
         })
     );
+
+    const highscoreTable = new ListTable({
+        parent: highscoreMessage,
+        top: 2,
+        left: 0,
+        height: 10,
+        tags: true,
+    });
 
     const highscoreMessageCloseButton = new Button(Object.assign({},
         buttonBase, {
@@ -116,11 +125,17 @@ const createMenu = ({screen}) => {
     });
 
     highscoreButton.on('press', () => {
-        highscoreMessage.display([
-            JSON.stringify(getHighscores()),
-        ].join`\n\n`, 0, () => {
-            highscoreMessage.focus();
-        });
+        highscoreMessage.show();
+        const highscores = getHighscores()
+            .map(({ name, score, lines, LPM, }) => {
+                return [name, lines, LPM, score].map(String);
+            });
+
+        highscoreTable.setData([
+            [ 'Nick',  'Lines' , 'LPM', 'Score' ],
+            ...highscores,
+        ]);
+        screen.render();
     });
 
     return {
