@@ -1,4 +1,4 @@
-const { Screen, Box, Log } = require('blessed');
+const { Screen, Box, Log, Message } = require('blessed');
 const { getRandom, } = require('./pieces');
 
 const screen = new Screen({
@@ -13,21 +13,6 @@ screen.key(['escape'], () => {
 const width = 10;
 const height = 20;
 const zoom = 4;
-
-// const debug = new Log({
-//     parent: screen,
-//     width: '100%',
-//     height: 8,
-//     border: 'line',
-//     style: {
-//         border: {
-//             fg: '#06A',
-//         },
-//     },
-//     bottom: 0,
-//     top: 'center',
-//     left: 'center',
-// });
 
 const display = new Box({
     parent: screen,
@@ -71,6 +56,22 @@ const stats = new Box({
     top: 3,
 });
 
+
+const restartMessage = new Message({
+    parent: screen,
+    width: 'shrink',
+    height: `shrink`,
+    border: 'line',
+    style: {
+        border: {
+            fg: '#06A',
+        },
+    },
+    left: 'center',
+    top: '60%',
+    hidden: true,
+});
+
 const board = Array.from({length: width*height}, (_, i) => {
     const point = Object.create({
     });
@@ -97,6 +98,8 @@ const board = Array.from({length: width*height}, (_, i) => {
 
 let activePiece, pendingPiece, timer;
 
+// point.element.style.transparent = true;
+
 const game = {
     score: 0,
     lines: 0,
@@ -108,64 +111,107 @@ const game = {
     width,
     height,
     zoom,
+    running: false,
     nextPiece: () => {
         activePiece = getRandom(game);
         if (activePiece.checkPlace()) {
-            // process.exit();
+            game.stop();
         }
     },
     addScore(n) {
         game.score += n;
     },
     addLines(n) {
-        if (!n) return;
         game.lines += n;
-        game.addScore([40, 100, 300, 1200][n-1] * game.level);
+    },
+    render() {
+        activePiece.eachCell(
+            (point) => {
+                point.element.style.bg = activePiece.color;
+            },
+            (point) => {
+                point.element.style.bg = point.color;
+            },
+        );
+
+        stats.setContent(`Score: ${game.score}\nLines: ${game.lines}\nLevel: ${game.level}`);
+
+        screen.render();
     },
     start() {
+        game.running = true;
+        game.nextPiece();
         timer = setInterval(() => {
-            activePiece.eachCell(
-                (point) => {
-                    point.element.style.bg = activePiece.color;
-                },
-                (point) => {
-                    point.element.style.bg = point.color;
-                },
-            );
-
-            stats.setContent(`Score: ${game.score}\nLines: ${game.lines}\nLevel: ${game.level}`);
-
-            screen.render();
+            game.render();
         }, 14)
+    },
+    stop() {
+        activePiece.stopTimer();
+        clearInterval(timer);
+        game.render();
+        game.running = false;
+        restartMessage.display('Game Over!\n\n Press any key to continue', 0, (answer) => {
+            setTimeout(() => {
+                game.reset();
+            });
+        });
+    },
+    reset() {
+        game.score = 0;
+        game.lines = 0;
+        board.forEach(point => {
+            point.color = void 0;
+        });
+        game.start();
     },
 };
 
-// point.element.style.transparent = true;
+const input = [
+    {
+        keys: ['z',','],
+        action: () => {
+            activePiece.rotate(-1);
+        },
+    },
+    {
+        keys: ['x', '.'],
+        action: () => {
+            activePiece.rotate(1);
+        },
+    },
+    {
+        keys: ['a', 'h', 'left'],
+        action: () => {
+            activePiece.move(-1);
+        },
+    },
+    {
+        keys: ['d', 'l', 'right'],
+        action: () => {
+            activePiece.move(1);
+        },
+    },
+    {
+        keys: ['s', 'down', 'j'],
+        action: () => {
+            activePiece.advance();
+        },
+    },
+    {
+        keys: ['space', '/', 'c', 'k', 'w', 'up'],
+        action: () => {
+            activePiece.drop();
+        },
+    },
+];
 
-activePiece = getRandom(game);
 
-screen.key(['z',','], () => {
-    activePiece.rotate(-1);
-});
-
-screen.key(['x', '.'], () => {
-    activePiece.rotate(1);
-});
-
-screen.key(['a', 'h', 'left'], () => {
-    activePiece.move(-1);
-});
-
-screen.key(['d', 'l', 'right'], () => {
-    activePiece.move(1);
-});
-
-screen.key(['s', 'down', 'j'], () => {
-   activePiece.advance();
-});
-
-screen.key(['space', '/', 'c', 'k', 'w', 'up'], () => {
-    activePiece.drop();
+input.forEach(({keys, action}) => {
+    screen.key(keys, () => {
+        if (game.running) {
+            action();
+        }
+    });
 });
 
 game.start();
