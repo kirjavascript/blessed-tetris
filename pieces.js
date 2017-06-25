@@ -211,59 +211,48 @@ const getRandom = (game) => {
 
     const piece = Object.create({
         rotate(order) {
-            piece.rotation += order;
-            if (piece.rotation < 0) {
-                piece.rotation += 4;
-            }
-
-            if (piece.checkPlace()) {
-                piece.rotation -= order;
-            }
-            else {
-                let bounds = piece.checkBounds();
-                if (bounds) {
-                    piece.x -= bounds;
-                    if (piece.checkPlace()) {
-                        piece.x += bounds;
-                        piece.rotation -= order;
-                    }
+            // TGM1-style wall kick rules
+            for (let xOff of [0, 1, -1]) {
+                if (piece.tryTransform({x: xOff, rotation: order})) {
+                    return;
                 }
             }
+        },
+        tryTransform({x = 0, y = 0, rotation = 0}) {
+            if (piece.collides({x, y, rotation})) {
+                return false;
+            }
+            piece.x += x;
+            piece.y += y;
+            piece.rotation = modulo(piece.rotation + rotation, 4);
+            return true;
         },
         move(dx) {
-            piece.x += dx;
-            if (piece.checkBounds() || piece.checkPlace()) {
-                piece.x -= dx;
-            }
+            piece.tryTransform({x: dx});
         },
-        checkBounds() {
-            let doesCollide = 0;
-            piece.each((x, y) => {
-                if (x < 0) {
-                    doesCollide = Math.min(doesCollide, x);
-                }
-                else if (x >= width) {
-                    doesCollide = Math.max(doesCollide, x-width+1);
-                }
-            });
-            return doesCollide;
-        },
-        checkPlace() {
+        collides({x = 0, y = 0, rotation = 0} = {}) {
             let doesCollide = false;
-            piece.each((x, y) => {
+            piece.eachTransformed({x, y, rotation}, (x, y) => {
+                if (doesCollide) {
+                    return;
+                }
                 if (y >= height) {
                     doesCollide = true;
                 }
                 else if (board[x + (y*width)] && board[x + (y*width)].color) {
                     doesCollide = true;
                 }
+                else if (x < 0) {
+                    doesCollide = true;
+                }
+                else if (x >= width) {
+                    doesCollide = true;
+                }
             });
             return doesCollide;
         },
         advance() {
-            piece.y++;
-            if (piece.checkPlace()) {
-                piece.y--;
+            if (!piece.tryTransform({y: 1})) {
                 piece.place();
             }
         },
@@ -299,10 +288,9 @@ const getRandom = (game) => {
             game.nextPiece();
         },
         drop() {
-            while (!piece.checkPlace()) {
-                piece.y++;
+            while (piece.tryTransform({y: 1})) {
+                // intentionally empty
             }
-            piece.y--;
             piece.place();
         },
         getShape() {
@@ -322,21 +310,30 @@ const getRandom = (game) => {
                 }
             });
         },
-        eachGhost(on, off) {
-            let savedY = piece.y;
-
-            while (!piece.checkPlace()) {
-                piece.y++;
-            }
-            piece.y--;
-            piece.eachCell(on, off);
-            piece.y = savedY;
+        eachTransformed({x = 0, y = 0, rotation = 0}, callback) {
+            let frame = piece.frames[modulo(piece.rotation + rotation, 4)]
+            frame.forEach((d, i) => {
+                if (d) {
+                    const ix = i%4;
+                    const iy = 0|i/4;
+                    callback(ix + piece.x + x, iy + piece.y + y, i);
+                }
+            });
         },
-        eachCell(callbackOn, callbackOff) {
+        eachGhost(on, off) {
+            let y = 0;
+            while (!piece.collides({y: y + 1})) {
+                y += 1;
+            }
+            piece.eachCell(on, off, 0, y);
+        },
+        // TODO: should this accept {x, y, rotation} transform as last arg? (atm not needed)
+        eachCell(callbackOn, callbackOff, xOff = 0, yOff = 0) {
             board.forEach((point, i) => {
 
                 const { element, color, x, y } = point;
-                const { x: pieceX, y: pieceY } = piece;
+                const pieceX = piece.x + xOff;
+                const pieceY = piece.y + yOff;
 
                 let drawColor = color;
 
@@ -392,6 +389,9 @@ const shuffle = (array) => {
     }
     return array;
 }
+
+// % is actually remainder. this does the right thing for negative a
+const modulo = (a, b) => ((a % b) + b) % b;
 
 module.exports = {
     getRandom,

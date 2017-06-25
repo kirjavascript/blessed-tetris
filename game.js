@@ -111,7 +111,7 @@ module.exports = (client) => {
             activePiece = pendingPiece;
             activePiece.startTimer();
             pendingPiece = getRandom(game);
-            if (activePiece.checkPlace()) {
+            if (activePiece.collides()) {
                 game.stop();
             }
         },
@@ -128,7 +128,7 @@ module.exports = (client) => {
                 // should dedupe
                 activePiece = toPlace;
                 toPlace.startTimer();
-                if (activePiece.checkPlace()) {
+                if (activePiece.collides()) {
                     game.stop();
                 }
             }
