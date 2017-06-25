@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://thumbs.gfycat.com/ScalySpitefulGrackle-size_restricted.gif" alt="blessed-tetris">
+    [![asciicast](https://asciinema.org/a/aehhutYDEJ9aMQSE8XZDt6bWQ.png)](https://asciinema.org/a/aehhutYDEJ9aMQSE8XZDt6bWQ)
     <br>
 </div>
 <br>
