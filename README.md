@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://zippy.gfycat.com/ScalySpitefulGrackle.webm" alt="blessed-tetris">
+    <img src="https://thumbs.gfycat.com/ScalySpitefulGrackle-size_restricted.gif" alt="blessed-tetris">
     <br>
 </div>
 <br>
