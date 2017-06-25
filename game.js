@@ -12,7 +12,6 @@ module.exports = (client) => {
 
     screen.key(['escape', 'C-c'], () => {
         screen.destroy();
-        process.exit();
     });
 
     const width = 10;
