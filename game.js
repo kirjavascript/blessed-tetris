@@ -12,6 +12,7 @@ module.exports = (client) => {
 
     screen.key(['escape', 'C-c'], () => {
         screen.destroy();
+        !client && process.exit();
     });
 
     const width = 10;
@@ -149,6 +150,8 @@ module.exports = (client) => {
         height,
         zoom,
         running: false,
+        startTime: 0,
+        stopTime: 0,
         nextPiece() {
             activePiece = pendingPiece;
             activePiece.startTimer();
@@ -183,15 +186,32 @@ module.exports = (client) => {
                     point.element.style.transparent = false;
                 },
             );
+            let minutesPlaying = Math.max(game.timePlaying(), 1) / 1000 / 60;
+            let stats = {
+                Score: game.score,
+                Lines: game.lines,
+                LPM: (game.lines / minutesPlaying).toFixed(2),
+                Level: game.level,
+            };
 
-            statsBox.setContent(`Score: {bold}${game.score}{/}\nLines: {bold}${game.lines}{/}\nLevel: {bold}${game.level}{/}`);
+            statsBox.setContent(
+                Object
+                    .entries(stats)
+                    .map(([name, val]) => `${name}: {bold}${val}{/}`)
+                    .join`\n`
+            );
 
             nextBox.setContent(` Next\n\n${pendingPiece.viewShape()}`);
 
             screen.render();
         },
+        timePlaying() {
+            return (game.stopTime || Date.now()) - game.startTime
+        },
         start() {
             game.running = true;
+            game.startTime = Date.now();
+            game.stopTime = 0;
             pendingPiece = getRandom(game);
             game.nextPiece();
             timer = setInterval(() => {
@@ -201,6 +221,7 @@ module.exports = (client) => {
         stop() {
             activePiece.stopTimer();
             clearInterval(timer);
+            game.stopTime = Date.now();
             game.render();
             game.running = false;
             restartMessage.display('Game Over!\n\n Press any key to continue', 0, (answer) => {
