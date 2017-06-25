@@ -360,6 +360,7 @@ const getRandom = (game) => {
         startTimer() {
             piece.timer = setInterval(() => {
                 piece.advance();
+                game.render();
             }, [500, 450, 400, 350, 300, 250, 200, 150, 100][game.level - 1] || 50);
         },
         stopTimer() {

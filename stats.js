@@ -74,12 +74,13 @@ const createStats = ({width, height, zoom, screen}) => {
     //     process.exit();
     // });
 
-    alertMessage.display = (msg) => {
+    alertMessage.display = (screen, msg) => {
         alertMessage.setContent(`{bold}${msg}{/}`);
         alertMessage.show();
         alertMessage.timer && clearTimeout(alertMessage.timer);
         alertMessage.timer = setTimeout(() => {
             alertMessage.hide();
+            screen.render();
         }, 2000)
     };
 
