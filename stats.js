@@ -6,7 +6,6 @@ const createStats = ({width, height, zoom, screen}) => {
         parent: screen,
         width: (width*zoom+2),
         height: `100%-${(height*(zoom/2))+2+4}`,
-        // height: 10,
         border: 'line',
         style: {
             border: {

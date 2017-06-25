@@ -215,6 +215,7 @@ const getRandom = (game) => {
             if (piece.rotation < 0) {
                 piece.rotation += 4;
             }
+
             if (piece.checkPlace()) {
                 piece.rotation -= order;
             }
@@ -222,6 +223,10 @@ const getRandom = (game) => {
                 let bounds = piece.checkBounds();
                 if (bounds) {
                     piece.x -= bounds;
+                    if (piece.checkPlace()) {
+                        piece.x += bounds;
+                        piece.rotation -= order;
+                    }
                 }
             }
         },

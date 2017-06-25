@@ -1,4 +1,4 @@
-const { Screen, Box } = require('blessed');
+const { Screen, Box, Button, Message } = require('blessed');
 const { getRandom } = require('./pieces');
 const { createStats } = require('./stats');
 
@@ -19,6 +19,7 @@ module.exports = (client) => {
     const width = 10;
     const height = 20;
     const zoom = 4;
+
 
     const display = new Box({
         parent: screen,
