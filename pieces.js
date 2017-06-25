@@ -203,6 +203,11 @@ const getRandom = (game) => {
     }
 
     const nextIndex = queue.pop();
+    const initialState = {
+        x: (width/2)-2,
+        y: -2,
+        rotation: 0|Math.random()*4,
+    };
 
     const piece = Object.create({
         rotate(order) {
@@ -350,7 +355,7 @@ const getRandom = (game) => {
         startTimer() {
             piece.timer = setInterval(() => {
                 piece.advance();
-            }, [500, 450, 400, 350][game.level] || 200);
+            }, [500, 450, 400, 350, 300, 250, 200, 150, 100][game.level - 1] || 50);
         },
         stopTimer() {
             clearInterval(piece.timer);
@@ -359,13 +364,13 @@ const getRandom = (game) => {
             let newObj = Object.create(piece);
             return Object.assign(newObj, piece);
         },
+        hold() {
+            this.stopTimer();
+            Object.assign(this, initialState);
+        }
     });
 
-    Object.assign(piece, pieces[nextIndex], {
-        x: (width/2)-2,
-        y: -2,
-        rotation: 0|Math.random()*4,
-    });
+    Object.assign(piece, pieces[nextIndex], initialState);
 
     return piece;
 };

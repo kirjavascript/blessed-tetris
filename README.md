@@ -22,9 +22,10 @@ WASD, HJKL and arrow keys are supported
 | Action        | Keys             |
 | ------------- |------------------|
 | rotate left   | Z ,              |
-| rotate right  | X .              |
+| rotate right  | X . up           |
 | move left     | A H left         |
 | move right    | D L right        |
-| hard drop     | space C / W K up |
+| hard drop     | space C / W K    |
 | soft drop     | S J down         |
+| hold          | tab V M \        |
 | quit          | escape C-c       |
