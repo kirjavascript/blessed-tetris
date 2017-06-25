@@ -1,6 +1,10 @@
 const { Screen, Box, Log, Message } = require('blessed');
 const { getRandom, } = require('./pieces');
 
+// https://github.com/chjj/blessed/blob/master/example/blessed-telnet.js
+//https://github.com/chjj/blessed#multiple-screens
+// telnetris 23
+
 const screen = new Screen({
     fastCSR: true,
     dockBorders: true,
@@ -145,7 +149,7 @@ const game = {
     height,
     zoom,
     running: false,
-    nextPiece: () => {
+    nextPiece() {
         activePiece = pendingPiece;
         activePiece.startTimer();
         pendingPiece = getRandom(game);
