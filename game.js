@@ -124,7 +124,7 @@ module.exports = (client) => {
         },
         addLines(n) {
             game.lines += n;
-            alertMessage.display(n == 4 ? 'Tetris!' : `${n} Lines!`);
+            alertMessage.display(screen, n == 4 ? 'Tetris!' : `${n} Lines!`);
         },
         render() {
             activePiece.eachCell(
@@ -178,6 +178,7 @@ module.exports = (client) => {
             timer = setInterval(() => {
                 game.render();
             }, 50)
+            game.render();
         },
         stop() {
             activePiece.stopTimer();
@@ -262,6 +263,7 @@ module.exports = (client) => {
         screen.key(keys, () => {
             if (game.running) {
                 action();
+                game.render();
             }
         });
     });
