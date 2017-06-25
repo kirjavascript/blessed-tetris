@@ -227,7 +227,7 @@ module.exports = (client) => {
             },
         },
         {
-            keys: ['x', '.'],
+            keys: ['x', '.', 'up'],
             action: () => {
                 activePiece.rotate(1);
             },
@@ -251,7 +251,7 @@ module.exports = (client) => {
             },
         },
         {
-            keys: ['space', '/', 'c', 'k', 'w', 'up'],
+            keys: ['space', '/', 'c', 'k', 'w'],
             action: () => {
                 activePiece.drop();
             },
