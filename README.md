@@ -1,7 +1,5 @@
 <div align="center">
-    <a href="http://mspaint.us/">
-        <img src="web/static/docs/mspaint.png" alt="mspaint">
-    </a>
+    <img src="https://zippy.gfycat.com/ScalySpitefulGrackle.webm" alt="blessed-tetris">
     <br>
 </div>
 <br>
@@ -18,10 +16,10 @@
 WASD, HJKL and arrow keys are supported
 
 | Action        | Keys             |
-| ------------- |:----------------:|
-| rotate left   | z ,              |
-| rotate right  | x .              |
-| move left     | a h left         |
-| move right    | d l right        |
-| hard drop     | space c / w k up |
-| soft drop     | s j down         |
+| ------------- |------------------|
+| rotate left   | Z ,              |
+| rotate right  | X .              |
+| move left     | A H left         |
+| move right    | D L right        |
+| hard drop     | space C / W K up |
+| soft drop     | S J down         |

@@ -1,7 +1,8 @@
 {
     "name": "blessed-tetris",
     "scripts": {
-        "start": "node daemon",
+        "start": "node index",
+        "daemon": "node daemon",
         "reload": "node daemon --reload"
     },
     "dependencies": {
