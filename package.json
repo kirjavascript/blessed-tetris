@@ -3,10 +3,13 @@
     "scripts": {
         "start": "node index",
         "daemon": "node daemon",
-        "reload": "node daemon --reload"
+        "reload": "node daemon --reload",
+        "serve-dev": "node index --serve-dev",
+        "serve": "node index --serve"
     },
     "dependencies": {
-        "blessed": "^0.1.81"
+        "blessed": "^0.1.81",
+        "telnet2": "^0.0.1"
     },
     "devDependencies": {
         "chokidar": "^1.7.0"

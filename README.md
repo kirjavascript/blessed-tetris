@@ -23,4 +23,4 @@ WASD, HJKL and arrow keys are supported
 | move right    | D L right        |
 | hard drop     | space C / W K up |
 | soft drop     | S J down         |
-| quit          | escape           |
+| quit          | escape C-c       |

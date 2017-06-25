@@ -859,6 +859,10 @@ tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
+telnet2@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/telnet2/-/telnet2-0.0.1.tgz#4ecf8b113c33a7e077092c6293ee427df3332b0d"
+
 tough-cookie@~2.3.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.2.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
