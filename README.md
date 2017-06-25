@@ -4,7 +4,11 @@
 </div>
 <br>
 
-## Installation
+## Play Online
+
+    telnet kirjava.xyz
+
+## Play Locally
 
     git clone https://github.com/kirjavascript/blessed-tetris.git
     cd blessed-tetris
