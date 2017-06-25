@@ -32,7 +32,7 @@ module.exports = (client) => {
 
     const title = new Box({
         parent: screen,
-        width: '100%',
+        width: 'shrink',
         height: 3,
         content: '',
         style: {

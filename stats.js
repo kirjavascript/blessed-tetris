@@ -99,20 +99,6 @@ const createStats = ({width, height, zoom, screen}) => {
         hidden: true,
     });
 
-
-
-//     restartMessage.display = (callback) => {
-//         restartMessage.show();
-//         restartMessage.focus();
-//         function restart () {
-//             restartMessage.hide();
-
-//             callback();
-//         };
-//         restartMessage.key('enter', restart);
-//         screen.render();
-//     };
-
     return {
         alertMessage,
         restartMessage,
