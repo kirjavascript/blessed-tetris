@@ -51,28 +51,28 @@ const createStats = ({width, height, zoom, screen}) => {
         left: 'center',
         top: 6,
         tags: true,
-        // hidden: true,
+        hidden: true,
         content: '(~˘▾˘)~',
         timer: void 0,
     });
 
-    const aboutButton = new Button({
-        parent: statsBox,
-        width: 'shrink',
-        left: 0,
-        bottom: 0,
-        tags: true,
-        mouse: true,
-        content: 'About',
-        style: {
-            bg: '#06A',
-            fg: '#000',
-        },
-    });
+    // const aboutButton = new Button({
+    //     parent: statsBox,
+    //     width: 'shrink',
+    //     left: 0,
+    //     bottom: 0,
+    //     tags: true,
+    //     mouse: true,
+    //     content: 'About',
+    //     style: {
+    //         bg: '#06A',
+    //         fg: '#000',
+    //     },
+    // });
 
-    aboutButton.on('press', () => {
-        process.exit();
-    });
+    // aboutButton.on('press', () => {
+    //     process.exit();
+    // });
 
     alertMessage.display = (msg) => {
         alertMessage.setContent(`{bold}${msg}{/}`);
@@ -83,7 +83,7 @@ const createStats = ({width, height, zoom, screen}) => {
         }, 2000)
     };
 
-    const restartMessage = new Message({
+    const restartMessage = new Box({
         parent: screen,
         width: 'shrink',
         height: `shrink`,
@@ -95,8 +95,23 @@ const createStats = ({width, height, zoom, screen}) => {
         },
         left: 'center',
         top: '60%',
+        content: 'Game Over!\n\n Press enter key to restart',
         hidden: true,
     });
+
+
+
+//     restartMessage.display = (callback) => {
+//         restartMessage.show();
+//         restartMessage.focus();
+//         function restart () {
+//             restartMessage.hide();
+
+//             callback();
+//         };
+//         restartMessage.key('enter', restart);
+//         screen.render();
+//     };
 
     return {
         alertMessage,

@@ -11,11 +11,6 @@ module.exports = (client) => {
         output: client,
     });
 
-    screen.key(['escape', 'C-c'], () => {
-        screen.destroy();
-        !client && process.exit();
-    });
-
     const width = 10;
     const height = 20;
     const zoom = 4;
@@ -190,11 +185,8 @@ module.exports = (client) => {
             game.stopTime = Date.now();
             game.render();
             game.running = false;
-            restartMessage.display('Game Over!\n\n Press any key to continue', 0, (answer) => {
-                setTimeout(() => {
-                    game.reset();
-                });
-            });
+            restartMessage.show();
+            screen.render();
         },
         reset() {
             game.score = 0;
@@ -202,9 +194,23 @@ module.exports = (client) => {
             board.forEach(point => {
                 point.color = void 0;
             });
+            restartMessage.hide();
             game.start();
         },
     };
+
+    // keyboard input
+
+    screen.key(['escape', 'C-c'], () => {
+        screen.destroy();
+        !client && process.exit();
+    });
+
+    screen.key('enter', () => {
+        if (!game.running) {
+            game.reset();
+        }
+    });
 
     const input = [
         {
