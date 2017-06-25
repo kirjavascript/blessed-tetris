@@ -78,6 +78,17 @@ module.exports = (client) => {
         tags: true,
     });
 
+    const holdBox = new Box({
+        parent: statsBox,
+        width: 'shrink',
+        height: `shrink`,
+        style: {
+        },
+        top: 0,
+        right: 12,
+        tags: true,
+    });
+
     const alertMessage = new Box({
         parent: statsBox,
         width: 'shrink',
@@ -137,6 +148,7 @@ module.exports = (client) => {
 
 
     let activePiece, pendingPiece, timer;
+    let heldPiece, justHeld;
 
     const game = {
         score: 0,
@@ -153,12 +165,32 @@ module.exports = (client) => {
         startTime: 0,
         stopTime: 0,
         nextPiece() {
+            justHeld = false;
             activePiece = pendingPiece;
             activePiece.startTimer();
             pendingPiece = getRandom(game);
             if (activePiece.checkPlace()) {
                 game.stop();
             }
+        },
+        hold() {
+            if (justHeld) {
+                return;
+            }
+            activePiece.hold();
+            let toPlace = heldPiece;
+            heldPiece = activePiece;
+            if (!toPlace) {
+                game.nextPiece();
+            } else {
+                // should dedupe
+                activePiece = toPlace;
+                toPlace.startTimer();
+                if (activePiece.checkPlace()) {
+                    game.stop();
+                }
+            }
+            justHeld = true;
         },
         addScore(n) {
             game.score += n;
@@ -202,6 +234,8 @@ module.exports = (client) => {
             );
 
             nextBox.setContent(` Next\n\n${pendingPiece.viewShape()}`);
+
+            holdBox.setContent(` Hold\n\n${heldPiece ? heldPiece.viewShape() : ''}`)
 
             screen.render();
         },
@@ -248,7 +282,7 @@ module.exports = (client) => {
             },
         },
         {
-            keys: ['x', '.'],
+            keys: ['x', '.', 'up'],
             action: () => {
                 activePiece.rotate(1);
             },
@@ -272,9 +306,15 @@ module.exports = (client) => {
             },
         },
         {
-            keys: ['space', '/', 'c', 'k', 'w', 'up'],
+            keys: ['space', '/', 'c', 'k', 'w'],
             action: () => {
                 activePiece.drop();
+            },
+        },
+        {
+            keys: ['tab'],
+            action: () => {
+                game.hold();
             },
         },
     ];
