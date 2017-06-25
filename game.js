@@ -2,6 +2,7 @@ const { Screen, Box, Button, Message } = require('blessed');
 const { getRandom } = require('./pieces');
 const { createStats } = require('./stats');
 const { createMenu } = require('./menu');
+const { checkHighscore } = require('./highscores');
 
 module.exports = (client) => {
 
@@ -16,6 +17,13 @@ module.exports = (client) => {
     const height = 20;
     const zoom = 4;
 
+    // background
+    new Box({
+        width: '100%',
+        height: '100%',
+        style: { bg: '#000', },
+        parent: screen,
+    });
 
     const display = new Box({
         parent: screen,
@@ -25,6 +33,7 @@ module.exports = (client) => {
         style: {
             border: {
                 fg: '#06A',
+                bg: '#000',
             },
         },
         bottom: 0,
@@ -38,6 +47,7 @@ module.exports = (client) => {
         content: '',
         style: {
             fg: '#06A',
+            bg: '#000',
         },
         content: '╔╦╗╔═╗╔╦╗╦═╗╦╔═╗\n ║ ║╣  ║ ╠╦╝║╚═╗\n ╩ ╚═╝ ╩ ╩╚═╩╚═╝',
         left: '50%-9',
@@ -148,6 +158,7 @@ module.exports = (client) => {
                 },
                 (point) => {
                     point.element.style.transparent = false;
+                    point.element.style.bg = point.element.style.bg  || '#000';
                 },
             );
             let minutesPlaying = Math.max(game.timePlaying(), 1) / 1000 / 60;
@@ -188,6 +199,7 @@ module.exports = (client) => {
             game.stopTime = Date.now();
             game.render();
             game.running = false;
+            checkHighscore({ game, screen });
             restartMessage.show();
             screen.render();
         },
