@@ -12,6 +12,7 @@ module.exports = (client) => {
 
     screen.key(['escape', 'C-c'], () => {
         screen.destroy();
+        !client && process.exit();
     });
 
     const width = 10;
@@ -189,13 +190,15 @@ module.exports = (client) => {
             let stats = {
                 Score: game.score,
                 Lines: game.lines,
-                LPM: (game.lines / minutesPlaying).toFixed(2)
+                LPM: (game.lines / minutesPlaying).toFixed(2),
+                Level: game.level,
             };
 
             statsBox.setContent(
-                Object.entries(stats)
-                .map(([name, val]) => `${name}: {bold}${val}{/}`)
-                .join("\n")
+                Object
+                    .entries(stats)
+                    .map(([name, val]) => `${name}: {bold}${val}{/}`)
+                    .join`\n`
             );
 
             nextBox.setContent(` Next\n\n${pendingPiece.viewShape()}`);
