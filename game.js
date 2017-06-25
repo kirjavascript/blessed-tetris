@@ -11,6 +11,7 @@ module.exports = (client) => {
         dockBorders: true,
         input: client,
         output: client,
+        terminal: 'xterm-256color'
     });
 
     const width = 10;
@@ -145,9 +146,12 @@ module.exports = (client) => {
             activePiece.eachCell(
                 (point) => {
                     point.element.style.bg = activePiece.color;
+                    point.element.style.fg = "#000";
+                    point.element.content = '╔══╗\n╚══╝'
                 },
                 (point) => {
                     point.element.style.bg = point.color;
+                    point.element.content = '';
                 },
             );
 
@@ -255,7 +259,7 @@ module.exports = (client) => {
         {
             keys: ['s', 'down', 'j'],
             action: () => {
-                activePiece.advance();
+                activePiece.advance(true);
             },
         },
         {
