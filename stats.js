@@ -56,24 +56,6 @@ const createStats = ({width, height, zoom, screen}) => {
         timer: void 0,
     });
 
-    // const aboutButton = new Button({
-    //     parent: statsBox,
-    //     width: 'shrink',
-    //     left: 0,
-    //     bottom: 0,
-    //     tags: true,
-    //     mouse: true,
-    //     content: 'About',
-    //     style: {
-    //         bg: '#06A',
-    //         fg: '#000',
-    //     },
-    // });
-
-    // aboutButton.on('press', () => {
-    //     process.exit();
-    // });
-
     alertMessage.display = (screen, msg) => {
         alertMessage.setContent(`{bold}${msg}{/}`);
         alertMessage.show();
@@ -84,25 +66,8 @@ const createStats = ({width, height, zoom, screen}) => {
         }, 2000)
     };
 
-    const restartMessage = new Box({
-        parent: screen,
-        width: 'shrink',
-        height: `shrink`,
-        border: 'line',
-        style: {
-            border: {
-                fg: '#06A',
-            },
-        },
-        left: 'center',
-        top: '60%',
-        content: 'Game Over!\n\n Press enter key to restart',
-        hidden: true,
-    });
-
     return {
         alertMessage,
-        restartMessage,
         holdBox,
         nextBox,
         statsBox,

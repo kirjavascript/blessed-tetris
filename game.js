@@ -1,6 +1,7 @@
 const { Screen, Box, Button, Message } = require('blessed');
 const { getRandom } = require('./pieces');
 const { createStats } = require('./stats');
+const { createMenu } = require('./menu');
 
 module.exports = (client) => {
 
@@ -44,8 +45,12 @@ module.exports = (client) => {
     });
 
     const {
-        alertMessage,
         restartMessage,
+        menuBox,
+    } = createMenu({ screen });
+
+    const {
+        alertMessage,
         holdBox,
         nextBox,
         statsBox,
