@@ -5,7 +5,7 @@
         "daemon": "node daemon",
         "reload": "node daemon --reload",
         "serve-dev": "node index --serve-dev",
-        "serve": "node index --serve"
+        "serve": "forever start --uid \"tetris\" index.js --serve"
     },
     "dependencies": {
         "blessed": "^0.1.81",
