@@ -11,8 +11,8 @@ const pieces = [
             ],
             [
                 0,0,0,0,
-                1,1,1,1,
                 0,0,0,0,
+                1,1,1,1,
                 0,0,0,0,
             ],
             [
@@ -40,9 +40,9 @@ const pieces = [
                 0,0,0,0,
             ],
             [
+                0,0,0,0,
                 1,0,0,0,
                 1,1,1,0,
-                0,0,0,0,
                 0,0,0,0,
             ],
             [
@@ -82,9 +82,9 @@ const pieces = [
                 0,0,0,0,
             ],
             [
+                0,0,0,0,
                 0,0,1,0,
                 1,1,1,0,
-                0,0,0,0,
                 0,0,0,0,
             ],
         ],
@@ -111,15 +111,15 @@ const pieces = [
                 0,0,0,0,
             ],
             [
-                1,0,0,0,
-                1,1,0,0,
                 0,1,0,0,
+                0,1,1,0,
+                0,0,1,0,
                 0,0,0,0,
             ],
             [
+                0,0,0,0,
                 0,1,1,0,
                 1,1,0,0,
-                0,0,0,0,
                 0,0,0,0,
             ],
             [
@@ -147,9 +147,9 @@ const pieces = [
                 0,0,0,0,
             ],
             [
+                0,0,0,0,
                 0,1,0,0,
                 1,1,1,0,
-                0,0,0,0,
                 0,0,0,0,
             ],
             [
@@ -171,15 +171,15 @@ const pieces = [
                 0,0,0,0,
             ],
             [
+                0,0,1,0,
+                0,1,1,0,
                 0,1,0,0,
-                1,1,0,0,
-                1,0,0,0,
                 0,0,0,0,
             ],
             [
+                0,0,0,0,
                 1,1,0,0,
                 0,1,1,0,
-                0,0,0,0,
                 0,0,0,0,
             ],
             [
@@ -207,67 +207,109 @@ const getRandom = (game) => {
         x: (width/2)-2,
         y: -2,
         rotation: 0|Math.random()*4,
+        locking: false,
+        // TODO: Consider liming extended moves (e.g. moves when touching the ground)
+        // instead.
+        floorKicksLeft: 3,
     };
 
     const piece = Object.create({
         rotate(order) {
-            piece.rotation += order;
-            if (piece.rotation < 0) {
-                piece.rotation += 4;
-            }
+            let transformsToTry = [
+                { rotation: order },
+                { rotation: order, x:  1 },
+                { rotation: order, x: -1 },
+                // A pattern matching detection system is too much work
+                // and this feels accuate enough.
+                { rotation: order, x:  0, y: -1 },
+                { rotation: order, x:  1, y: -1 },
+                { rotation: order, x: -1, y: -1 },
 
-            if (piece.checkPlace()) {
-                piece.rotation -= order;
-            }
-            else {
-                let bounds = piece.checkBounds();
-                if (bounds) {
-                    piece.x -= bounds;
-                    if (piece.checkPlace()) {
-                        piece.x += bounds;
-                        piece.rotation -= order;
+                { rotation: order, x:  0, y: -2 },
+                { rotation: order, x:  1, y: -2 },
+                { rotation: order, x: -1, y: -2 },
+            ];
+
+            for (let transform of transformsToTry) {
+                let isFloorKick = transform.y < 0;
+                if (isFloorKick && piece.floorKicksLeft <= 0) {
+                    return;
+                }
+                if (piece.tryTransform(transform)) {
+                    if (isFloorKick) {
+                        --piece.floorKicksLeft;
                     }
+                    if (!piece.collides({y: 1})) {
+                        piece.resumeNormalMotion();
+                    }
+                    return;
                 }
             }
+        },
+        tryTransform({x = 0, y = 0, rotation = 0}) {
+            if (piece.collides({x, y, rotation})) {
+                return false;
+            }
+            piece.x += x;
+            piece.y += y;
+            piece.rotation = modulo(piece.rotation + rotation, 4);
+            return true;
         },
         move(dx) {
-            piece.x += dx;
-            if (piece.checkBounds() || piece.checkPlace()) {
-                piece.x -= dx;
+            if (piece.tryTransform({x: dx})) {
+                if (!piece.collides({y: 1})) {
+                    piece.resumeNormalMotion();
+                }
             }
         },
-        checkBounds() {
-            let doesCollide = 0;
-            piece.each((x, y) => {
-                if (x < 0) {
-                    doesCollide = Math.min(doesCollide, x);
-                }
-                else if (x >= width) {
-                    doesCollide = Math.max(doesCollide, x-width+1);
-                }
-            });
-            return doesCollide;
-        },
-        checkPlace() {
+        collides({x = 0, y = 0, rotation = 0} = {}) {
             let doesCollide = false;
-            piece.each((x, y) => {
+            piece.eachTransformed({x, y, rotation}, (x, y) => {
+                if (doesCollide) {
+                    return;
+                }
                 if (y >= height) {
                     doesCollide = true;
                 }
                 else if (board[x + (y*width)] && board[x + (y*width)].color) {
                     doesCollide = true;
                 }
+                else if (x < 0) {
+                    doesCollide = true;
+                }
+                else if (x >= width) {
+                    doesCollide = true;
+                }
             });
             return doesCollide;
         },
-        advance() {
-            piece.y++;
-            if (piece.checkPlace()) {
-                piece.y--;
+        advance(fromUserInput = false) {
+            if (!piece.tryTransform({y: 1})) {
+                if (!piece.locking) {
+                    piece.waitForLock();
+                } else if (fromUserInput) {
+                    piece.place();
+                }
+            }
+        },
+        waitForLock() {
+            piece.stopTimer();
+            piece.locking = true;
+            // even TGM3 isn't cruel enough to move lock delay below 250.
+            let lockDelay = [500, 400, 300][Math.floor(game.level / 10)] || 250;
+            piece.lockTimer = setTimeout(() => {
                 piece.place();
+            }, lockDelay);
+        },
+        resumeNormalMotion() {
+            if (piece.locking) {
+                clearTimeout(piece.lockTimer);
+                piece.locking = false;
+                piece.startTimer();
             }
         },
         place() {
+            piece.locking = false;
             piece.eachCell((point) => {
                 point.color = piece.color;
             });
@@ -299,10 +341,9 @@ const getRandom = (game) => {
             game.nextPiece();
         },
         drop() {
-            while (!piece.checkPlace()) {
-                piece.y++;
+            while (piece.tryTransform({y: 1})) {
+                // intentionally empty
             }
-            piece.y--;
             piece.place();
         },
         getShape() {
@@ -322,21 +363,30 @@ const getRandom = (game) => {
                 }
             });
         },
-        eachGhost(on, off) {
-            let savedY = piece.y;
-
-            while (!piece.checkPlace()) {
-                piece.y++;
-            }
-            piece.y--;
-            piece.eachCell(on, off);
-            piece.y = savedY;
+        eachTransformed({x = 0, y = 0, rotation = 0}, callback) {
+            let frame = piece.frames[modulo(piece.rotation + rotation, 4)]
+            frame.forEach((d, i) => {
+                if (d) {
+                    const ix = i%4;
+                    const iy = 0|i/4;
+                    callback(ix + piece.x + x, iy + piece.y + y, i);
+                }
+            });
         },
-        eachCell(callbackOn, callbackOff) {
+        eachGhost(on, off) {
+            let y = 0;
+            while (!piece.collides({y: y + 1})) {
+                y += 1;
+            }
+            piece.eachCell(on, off, 0, y);
+        },
+        // TODO: should this accept {x, y, rotation} transform as last arg? (atm not needed)
+        eachCell(callbackOn, callbackOff, xOff = 0, yOff = 0) {
             board.forEach((point, i) => {
 
                 const { element, color, x, y } = point;
-                const { x: pieceX, y: pieceY } = piece;
+                const pieceX = piece.x + xOff;
+                const pieceY = piece.y + yOff;
 
                 let drawColor = color;
 
@@ -365,6 +415,7 @@ const getRandom = (game) => {
         },
         stopTimer() {
             clearInterval(piece.timer);
+            clearTimeout(piece.lockTimer);
         },
         clone() {
             let newObj = Object.create(piece);
@@ -392,6 +443,9 @@ const shuffle = (array) => {
     }
     return array;
 }
+
+// % is actually remainder. this does the right thing for negative a
+const modulo = (a, b) => ((a % b) + b) % b;
 
 module.exports = {
     getRandom,
