@@ -136,12 +136,12 @@ module.exports = (client) => {
             activePiece.eachCell(
                 (point) => {
                     point.element.style.bg = activePiece.color;
-                    point.element.style.fg = "#000";
-                    point.element.content = '╔══╗\n╚══╝'
+                    // point.element.style.fg = "#000";
+                    // point.element.content = '╭──╮╰──╯'
                 },
                 (point) => {
                     point.element.style.bg = point.color;
-                    point.element.content = '';
+                    // point.element.content = '';
                 },
             );
 
