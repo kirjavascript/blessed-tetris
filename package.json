@@ -1,5 +1,8 @@
 {
     "name": "blessed-tetris",
+    "engines": {
+        "node": ">=8"
+    },
     "scripts": {
         "start": "node index",
         "daemon": "node daemon",
