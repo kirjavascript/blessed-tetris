@@ -1,10 +1,6 @@
 const telnet = require('telnet2');
 const newGame = require('./game');
 
-// github link bottom of statsBox
-// zoom
-// highscore
-
 const serve = process.argv.includes('--serve');
 const serveDev = process.argv.includes('--serve-dev');
 
