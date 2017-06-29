@@ -97,7 +97,7 @@ const createMenu = ({screen}) => {
         messageBase, {
             parent: screen,
             tags: true,
-            width: 40,
+            width: 'shrink',
             content: '{bold}High Scores{/}',
         })
     );
