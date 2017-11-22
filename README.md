@@ -1,5 +1,5 @@
 <div align="center">
-    <a href="https://asciinema.org/a/aehhutYDEJ9aMQSE8XZDt6bWQ" target="_blank"><img src="https://asciinema.org/a/aehhutYDEJ9aMQSE8XZDt6bWQ.png" /></a>
+    <a href="https://asciinema.org/a/aehhutYDEJ9aMQSE8XZDt6bWQ" target="_blank"><img src="https://i.imgur.com/MYm4EtK.png" /></a>
     <br>
 </div>
 <br>
