@@ -1,11 +1,14 @@
 {
     "name": "blessed-tetris",
+    "engines": {
+        "node": ">=8"
+    },
     "scripts": {
         "start": "node index",
         "daemon": "node daemon",
         "reload": "node daemon --reload",
         "serve-dev": "node index --serve-dev",
-        "serve": "forever start --uid \"tetris\" index.js --serve"
+        "serve": "pm2 start --name \"tetris\" index.js -- --serve"
     },
     "dependencies": {
         "blessed": "^0.1.81",
